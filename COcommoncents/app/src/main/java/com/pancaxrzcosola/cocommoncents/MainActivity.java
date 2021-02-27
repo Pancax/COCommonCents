@@ -2,16 +2,67 @@ package com.pancaxrzcosola.cocommoncents;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.reimaginebanking.api.nessieandroidsdk.NessieError;
+import com.reimaginebanking.api.nessieandroidsdk.NessieResultsListener;
+import com.reimaginebanking.api.nessieandroidsdk.models.Customer;
 import com.reimaginebanking.api.nessieandroidsdk.requestclients.NessieClient;
 
-public class MainActivity extends AppCompatActivity {
+import org.json.JSONObject;
 
-    static NessieClient nessieAPI = NessieClient.getInstance("37e93a473684febe1afbe773dbe31637");
+public class MainActivity extends AppCompatActivity{
+
+
+    EditText customerId;
+    EditText password;
+    Button loginButton;
+
+    private String customerIdText="";
+
+    private String practiceCustomer="56c66be5a73e49274150727b";
+
+    private String URL ="api.nessieisreal.com/enterprise/customers/";
+    ServerCommunicator communicator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        customerId = (EditText)findViewById(R.id.edittext_customerid);
+        password = (EditText)findViewById(R.id.edittext_password);
+        loginButton = (Button) findViewById(R.id.button_login);
+
+        communicator = new ServerCommunicator(this);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                customerIdText = customerId.getText().toString().trim();
+                communicator.getCustomerForID(practiceCustomer, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("onSuccess", response.toString());
+
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("onfailure", error.toString());
+                    }
+                });
+
+
+            }
+        });
     }
 }
+
+
