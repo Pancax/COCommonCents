@@ -22,6 +22,8 @@ public class ServerCommunicator {
     final private String API_KEY ="37e93a473684febe1afbe773dbe31637";
     final private String CUSTOMER_ID_URL="http://api.nessieisreal.com/enterprise/customers/";//+id ad the end
     final private String CUSTOMER_ADD_URL="http://api.nessieisreal.com/customers";
+    final private String ACCOUNT_ID_URL="http://api.nessieisreal.com/enterprise/accounts/";//+id
+
 
 
     public ServerCommunicator(Context c){
@@ -45,6 +47,12 @@ public class ServerCommunicator {
             e.printStackTrace();
         }
         JsonObjectRequest request = new JsonObjectRequest(POST, CUSTOMER_ADD_URL+"?key="+API_KEY, body, list, eList);
+        queue.add(request);
+    }
+
+    public void getAccountfromCustomerID(String id, Response.Listener<JSONObject> list, Response.ErrorListener eList){
+        JSONObject send = new JSONObject();
+        JsonObjectRequest request = new JsonObjectRequest(GET, ACCOUNT_ID_URL+id+"?key="+API_KEY,null,list,eList);
         queue.add(request);
     }
 }

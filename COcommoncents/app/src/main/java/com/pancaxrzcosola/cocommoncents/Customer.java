@@ -1,5 +1,6 @@
 package com.pancaxrzcosola.cocommoncents;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ public class Customer {
     private String _id;
     private String first_name;
     private String last_name;
+    private JSONArray accounts;
     private JSONObject address;
     private ArrayList<JSONObject> list;
 
@@ -64,5 +66,13 @@ public class Customer {
 
     public void setList(ArrayList<JSONObject> list) {
         this.list = list;
+    }
+
+    public JSONArray getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(JSONArray accounts) {
+        this.accounts = accounts;
     }
 }

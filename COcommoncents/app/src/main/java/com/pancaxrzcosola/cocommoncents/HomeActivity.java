@@ -7,11 +7,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.reimaginebanking.api.nessieandroidsdk.NessieError;
-import com.reimaginebanking.api.nessieandroidsdk.NessieResultsListener;
-import com.reimaginebanking.api.nessieandroidsdk.constants.AccountType;
-import com.reimaginebanking.api.nessieandroidsdk.models.Account;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,9 +18,10 @@ import java.util.ArrayList;
 
 
 public class HomeActivity extends AppCompatActivity {
-    /*
+
     private TextView mTextView;
     private final String keyAccountNickname = "COCCUTDHKTN2021";
+    ServerCommunicator communicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,56 +29,68 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         mTextView = (TextView) findViewById(R.id.text);
 
-        Data initialization and creation
+        //Data initialization and creation
         final Customer cust = new Customer();
+        final Account acc = new Account();
+        communicator = new ServerCommunicator(this);
         String savingsvalue = "";
-        MainActivity.nessieAPI.CUSTOMER.getCustomers(new NessieResultsListener() {
+        communicator.getCustomerForID(savedInstanceState.get("customer_id").toString(), new Response.Listener<JSONObject>() {
             @Override
-            public void onSuccess(Object result) {
-                JSONObject customer = (JSONObject) result;
+            public void onResponse(JSONObject response) {
                 try {
-                    cust.set_id(customer.getString("_id"));
-                    cust.setFirst_name(customer.getString("first_name"));
-                    cust.setLast_name(customer.getString("last_name"));
-                    cust.setAddress(customer.getJSONObject("address"));
+                    cust.set_id(response.getString("_id"));
+                    cust.setFirst_name(response.getString("first_name"));
+                    cust.setLast_name(response.getString("last_name"));
+                    cust.setAccounts(response.getJSONArray("account_ids"));
+                    cust.setAddress(response.getJSONObject("address"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
+        }, new Response.ErrorListener() {
             @Override
-            public void onFailure(NessieError error) {
-                Log.d("get1","Failed to obtain Customer!");
-            }
-        });
-
-        MainActivity.nessieAPI.ACCOUNT.getCustomerAccounts(cust.get_id(), new NessieResultsListener() {
-            @Override
-            public void onSuccess(Object result) {
-                cust.setList((ArrayList<JSONObject>) result);
-            }
-
-            @Override
-            public void onFailure(NessieError error) {
-                Log.d("get2","Failed to obtain Account Data!");
+            public void onErrorResponse(VolleyError error) {
+                Log.d("wrong1","Unable to Obtain Customer!");
             }
         });
 
 
         //Check if Savings and Checking account exists
         boolean savingsExists = false, checkingExists = false;
-        for(JSONObject son : cust.getList()){
+        for(int i = 0;i<cust.getAccounts().length();i++){
             try {
-                if (son.getString("nickname").compareToIgnoreCase(keyAccountNickname)==0) {
-                    savingsExists=true;
-                }
-                if (son.getString("type").compareToIgnoreCase("Checking")==0) {
-                    checkingExists=true;
-                }
+                communicator.getAccountfromCustomerID(cust.getAccounts().get(i).toString(),new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            acc.set_id(response.getString("_id"));
+                            acc.setType(response.getString("type"));
+                            acc.setBalance(response.getDouble("balance"));
+                            acc.setCustomer_id(response.getString("customer_id"));
+                            acc.setNickname(response.getString("nickname"));
+                            acc.setRewards(response.getInt("rewards"));
+                            acc.setBill_ids(response.getJSONArray("bill_ids"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("wrong2","Unable to Obtain Account Info!");
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+            if(acc.getNickname().compareToIgnoreCase(keyAccountNickname)==0){
+                savingsExists=true;
+            }
+            if(acc.getType().compareToIgnoreCase("Checking")==0){
+                checkingExists=true;
             }
         }
 
@@ -89,21 +101,10 @@ public class HomeActivity extends AppCompatActivity {
         //Generate Savings if false
         else{
             if(!savingsExists){
-                Account account = new Account.Builder().type(AccountType.SAVINGS).nickname(keyAccountNickname).rewards(0).balance(0).accountNumber(cust.get_id()+"0").build();
-                MainActivity.nessieAPI.ACCOUNT.createAccount(cust.get_id(), account, new NessieResultsListener() {
-                    @Override
-                    public void onSuccess(Object result) {
 
-                    }
-
-                    @Override
-                    public void onFailure(NessieError error) {
-
-                    }
-                });
             }
         }
 
-    }*/
+    }
 
 }
