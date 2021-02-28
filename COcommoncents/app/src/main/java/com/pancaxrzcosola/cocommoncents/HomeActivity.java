@@ -100,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                             if(acc.getNickname().equals(keyAccountNickname)){
                                 savingsExists=true;
+                                cust.setRainyAccountID(acc.get_id());
                             }
                             if(acc.getType().equals("checking")){
                                 checkingExists=true;
@@ -138,7 +139,14 @@ public class HomeActivity extends AppCompatActivity {
                 communicator.makeCustomerSavingsAcc(cust.get_id(), new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        try {
+                            String id=response.getString("account_number");
+                            cust.setRainyAccountID(id);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         savingsExist();
+
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -256,9 +264,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    //
-    //
-    //
+
     //<purchase, transfer> or purchase transfer
     final double ROUNDUP_BOUND=5;
     private void compareDataBaseToInformation(){
@@ -276,9 +282,10 @@ public class HomeActivity extends AppCompatActivity {
                 Integer amount = x.getInt("amount");
                 String status = x.getString("status");
                 String medium = x.getString("medium");
+                String accountID=x.getString("payer_id");
                 if(!idSet.contains(purchaseID)){
                     //IF THIS CALL RETURNS TRUE THEN WE ADDED TO A SET
-                    processPurchase(purchaseDate,purchaseID,amount,status,medium);
+                    processPurchase(purchaseDate,purchaseID,amount,status,medium, accountID);
                 }
 
             }catch(Exception e){e.printStackTrace();}
@@ -286,22 +293,44 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // WE ONLY WANT PURCHASES MADE FROM LAST WEEK THAT ARE IN BOUND LIMITS THAT ARE "COMPLETED" STATUS
-    private void processPurchase(String date, String id, Integer amount, String status, String medium){
+    private void processPurchase(String date, String id, Integer amount, String status, String medium, String accountID){
         //TODO:: This method actually connects and makes a transfer for this purchase IF IT REQUIRES ONE
         //TODO:: figure out how to do the date filtering
-        if(amount % ROUNDUP_BOUND!=0&&medium.equals("completed")){
+        if(amount % ROUNDUP_BOUND!=0&&status.equals("completed")&&medium.equals("balance")){
             //room for rounding up
             int guess= amount;
             //add until we get to cap
             while(guess%ROUNDUP_BOUND!=0){
                 guess++;
             }
+
+            //once we have found the correct amount, and the purchase we want, make a transfer for it
+            makeTransferForPurchase(id,guess-amount, accountID);
+
         }else{
 
         }
 
     }
 
+
+
+    private void makeTransferForPurchase(String purchaseID, int transferAmount, String accountID) {
+
+        communicator.makeTransferFromAccount(accountID, cust.getRainyAccountID(), transferAmount, purchaseID,new TransferHandler(purchaseID, this));
+
+                //make the transfer and then add to database
+    }
+
+
+    public void updateDataBaseWithPurchase(String purchaseID, JSONObject response){
+        //update database with purchase and transfer we just made, so we don't do it again
+
+        TransferDB transfer = new TransferDB(purchaseID,"","","","");
+
+        db.transferDao().insertAll(transfer);
+
+    }
 
     private void setUpDataBase() {
         db = Room.databaseBuilder(this, AppDatabase.class, "app-database").build();

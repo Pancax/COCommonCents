@@ -27,6 +27,7 @@ public class ServerCommunicator {
     final private String MAKE_SAVINGS_ACCOUNT_URL="http://api.nessieisreal.com/customers/";//+id+"/accounts"
     final private String GET_PURCHASES_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+"/purchases"
     final private String GET_TRANSFERS_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+/transfers
+    final private String MAKE_TRANSFER_FROM_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+"/transfers"
 
 
 
@@ -79,6 +80,24 @@ public class ServerCommunicator {
     }
     public void getTransfersForAccount(String accountId, Response.Listener<JSONArray> list, Response.ErrorListener eList){
         JsonArrayRequest request = new JsonArrayRequest(GET, GET_TRANSFERS_FOR_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,null,list,eList);
+        queue.add(request);
+    }
+
+
+    public void makeTransferFromAccount(String accountId, String savingsAccountId, int transferAmount, String purchaseID, TransferHandler tranHand){
+        JSONObject body= new JSONObject();
+
+        try{
+            body.put("medium","balance");
+            body.put("payee_id", savingsAccountId);
+            body.put("transaction_date","2021-02-28"); //TODO:: figur eout to way generate this date format
+            body.put("status", "pending");
+            body.put("amount",(double)transferAmount);
+            body.put("description", "Automatic transfer of funds due to Common Cents");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_TRANSFER_FROM_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,null,tranHand.list,tranHand.eList);
         queue.add(request);
     }
 }

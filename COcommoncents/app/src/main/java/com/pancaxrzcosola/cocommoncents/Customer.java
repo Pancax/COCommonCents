@@ -14,6 +14,9 @@ public class Customer {
     private ArrayList<JSONObject> list;
     private ArrayList<Account> accountList;
 
+
+    private String rainyAccountID="";
+
     public Customer(){
         this._id = "";
         this.first_name = "";
@@ -29,6 +32,13 @@ public class Customer {
         this.address = address;
     }
 
+
+    public void setRainyAccountID(String id){
+        this.rainyAccountID=id;
+    }
+    public String getRainyAccountID(){
+        return this.rainyAccountID;
+    }
     public void addAccount(Account acc){
         accountList.add(acc);
     }
