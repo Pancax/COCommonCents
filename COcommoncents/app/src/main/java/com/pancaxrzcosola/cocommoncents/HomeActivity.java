@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Index;
 import androidx.room.Room;
@@ -54,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         adar = new AdapterArray(pTransfers);
         rView = findViewById(R.id.rViewID);
         rView.setAdapter(adar);
+        rView.setLayoutManager(new LinearLayoutManager(this));
 
         communicator = new ServerCommunicator(this);
         String savingsvalue = "";
