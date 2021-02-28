@@ -3,6 +3,8 @@ package com.pancaxrzcosola.cocommoncents;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import androidx.room.Database;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
@@ -20,8 +22,8 @@ public class DatabaseIndexHandler {
     HomeActivity caller;
     int type;
     int bigSize;
-    boolean TReady=false;
-    boolean PReady=false;
+    static boolean TReady=false;
+    static boolean PReady=false;
     public DatabaseIndexHandler(int index, HomeActivity caller, int type, int bigSize){
         this.caller=caller;
         this.index=index;
@@ -33,7 +35,10 @@ public class DatabaseIndexHandler {
                 if((DatabaseIndexHandler.this).type==1){
                     (DatabaseIndexHandler.this).caller.handleTransferFromHandler(response,(DatabaseIndexHandler.this).index);
                     if((DatabaseIndexHandler.this).index==(DatabaseIndexHandler.this).bigSize-1){
-                        TReady=true;
+                        (DatabaseIndexHandler.this).TReady =true;
+                        Log.i("WORKING","HELLO");
+                        Log.i("TREADY", TReady+"");
+                        Log.i("PREADY", PReady+"");
                         if(PReady){
                             (DatabaseIndexHandler.this).caller.pushToBig();
                         }
@@ -41,7 +46,10 @@ public class DatabaseIndexHandler {
                 }else{
                     (DatabaseIndexHandler.this).caller.handlePurchaseFromHandler(response,(DatabaseIndexHandler.this).index);
                     if((DatabaseIndexHandler.this).index==(DatabaseIndexHandler.this).bigSize-1){
-                        PReady=true;
+                        (DatabaseIndexHandler.this).PReady=true;
+                        Log.i("WORKING","HELLO");
+                        Log.i("PREADY", PReady+"");
+                        Log.i("TREADY", TReady+"");
                         if(TReady){
                             (DatabaseIndexHandler.this).caller.pushToBig();
                         }

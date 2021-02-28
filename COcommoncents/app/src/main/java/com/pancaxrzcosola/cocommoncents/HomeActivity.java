@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.text);
 
         //Data initialization and creation
-        pTransfers.add(new PTransfer(new JSONObject(),new JSONObject()));
+       // pTransfers.add(new PTransfer(new JSONObject(),new JSONObject()));
         adar = new AdapterArray(pTransfers);
         rView = findViewById(R.id.rViewID);
         rView.setAdapter(adar);
@@ -324,7 +324,9 @@ public class HomeActivity extends AppCompatActivity {
         pTransfers2.get(index).purchase=purchase;
     }
     public void pushToBig(){
+        Log.i("BIG PUSH", "COOL");
         pTransfers.addAll(pTransfers2);
+        adar.notifyDataSetChanged();
     }
 
 
