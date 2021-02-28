@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
     }
 
     public AdapterArray(ArrayList<PTransfer> pt){
+        Log.i("constructer","It do");
         obj = pt;
     }
 
@@ -38,7 +38,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_row_item, parent, false);
-
+        Log.i("create?","poggers");
         return new ViewHolder(view);
     }
 
@@ -54,7 +54,8 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return 25;
+        Log.i("size?",obj.size()+"");
+        return obj.size();
     }
 
 
