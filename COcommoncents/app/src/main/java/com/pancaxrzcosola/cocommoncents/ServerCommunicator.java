@@ -24,6 +24,8 @@ public class ServerCommunicator {
     final private String CUSTOMER_ADD_URL="http://api.nessieisreal.com/customers";
     final private String ACCOUNT_ID_URL="http://api.nessieisreal.com/accounts/";//+id
     final private String MAKE_SAVINGS_ACCOUNT_URL="http://api.nessieisreal.com/customers/";//+id+"/accounts"
+    final private String GET_PURCHASES_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+"/purchases"
+    final private String GET_TRANSFERS_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+/transfers
 
 
 
@@ -65,7 +67,16 @@ public class ServerCommunicator {
             accBody.put("rewards",0);
             accBody.put("balance",0);
         }catch(Exception e){e.printStackTrace();}
-        JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_SAVINGS_ACCOUNT_URL+customerID+"/accounts",accBody,list,eList);
+        JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_SAVINGS_ACCOUNT_URL+customerID+"/accounts"+"?key="+API_KEY,accBody,list,eList);
         queue.add(request);
+    }
+
+    public void getPurchasesForAccount(String accountId, Response.Listener<JSONObject> list, Response.ErrorListener eList){
+
+        JsonObjectRequest request = new JsonObjectRequest(GET, GET_PURCHASES_FOR_ACCOUNT_URL+accountId+"/purchases"+"?key="+API_KEY,null,list,eList);
+        queue.add(request);
+    }
+    public void getTransfersForAccount(String accountId, Response.Listener<JSONObject> list, Response.ErrorListener eList){
+
     }
 }

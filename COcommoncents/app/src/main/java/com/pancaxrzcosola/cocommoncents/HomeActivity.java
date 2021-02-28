@@ -135,13 +135,37 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
+        updateTransfersAndPurchases();
+        //this starts the thread which updates the view everyonce in a while
+        Thread updateThread = new Thread(){
+            @Override
+            public void run(){
+                while(this.isAlive()){
+                    try {
+                        this.sleep(30000);
+                        updateTransfersAndPurchases();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        };
+        updateThread.start();
     }
+
+
+    //this method gets the transfers and purchases every once in a while
+    private void updateTransfersAndPurchases() {
+
+    }
+
 
     private void setUpDataBase() {
-        db = Room.databaseBuilder(this, SQLiteStuff.AppDatabase.class, "account-database").build();
+        db = Room.databaseBuilder(this, SQLiteStuff.AppDatabase.class, "app-database").build();
 
 
     }
-
+    //remember to add the accounts to the database and store them also
 
 }
