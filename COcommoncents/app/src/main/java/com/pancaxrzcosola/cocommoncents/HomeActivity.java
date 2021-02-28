@@ -10,6 +10,7 @@ import androidx.room.Room;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.pancaxrzcosola.cocommoncents.sqlitestuff.AppDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean checkingExists = false;
     private Customer cust = new Customer();
 
-    private SQLiteStuff.AppDatabase db;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,12 +158,13 @@ public class HomeActivity extends AppCompatActivity {
 
     //this method gets the transfers and purchases every once in a while
     private void updateTransfersAndPurchases() {
+        //this gets the transfers purchases
 
     }
 
 
     private void setUpDataBase() {
-        db = Room.databaseBuilder(this, SQLiteStuff.AppDatabase.class, "app-database").build();
+        db = Room.databaseBuilder(this, AppDatabase.class, "app-database").build();
 
 
     }
