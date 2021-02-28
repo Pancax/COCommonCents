@@ -29,6 +29,8 @@ public class ServerCommunicator {
     final private String GET_TRANSFERS_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+/transfers
     final private String MAKE_TRANSFER_FROM_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+"/transfers"
     final private String GET_ACCOUNTIDS_FROM_CUSTOMER_URL="http://api.nessieisreal.com/customers/";//+id+accounts
+    final private String GET_TRANSFER_FROM_TRANSFERID_URL="http://api.nessieisreal.com/transfers/";//+id
+    final private String GET_PURCHASE_FROM_PURCHASEID_URL="http://api.nessieisreal.com/purchases/";//+id
 
 
 
@@ -105,6 +107,16 @@ public class ServerCommunicator {
             e.printStackTrace();
         }
         JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_TRANSFER_FROM_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,body,tranHand.list,tranHand.eList);
+        queue.add(request);
+    }
+
+
+    public void getTransferFromTransferID(String transferID, DatabaseIndexHandler dx){
+        JsonObjectRequest request = new JsonObjectRequest(GET, GET_TRANSFER_FROM_TRANSFERID_URL+transferID+"?key="+API_KEY,null,dx.list,dx.eList);
+        queue.add(request);
+    }
+    public void getPurchaseFromPurchaseID(String purchaseID, DatabaseIndexHandler dx){
+        JsonObjectRequest request = new JsonObjectRequest(GET, GET_PURCHASE_FROM_PURCHASEID_URL+purchaseID+"?key="+API_KEY,null,dx.list,dx.eList);
         queue.add(request);
     }
 }

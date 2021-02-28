@@ -271,14 +271,29 @@ public class HomeActivity extends AppCompatActivity {
 
     //<purchase, transfer> or purchase transfer
     final double ROUNDUP_BOUND=5;
+    boolean runOnce=true;
     private void compareDataBaseToInformation(){
         ArrayList<TransferDB> ourList = new ArrayList<>(db.transferDao().getAll());
         HashSet<String> idSet = new HashSet<>();
+        int i=0;
+
         for(TransferDB x: ourList) {
             idSet.add(x.purchaseID);
+
             //make the purchase/transfer objects we already have in the database
             //TODO::
+            //we have transaction and purchase id aswell as acc, just get the right thing and give info bray bray
+            //basically get the transfer and purchases based on the transfer and purchase ids
+            if(runOnce) {
+                pTransfers.add(new PTransfer());
+                communicator.getTransferFromTransferID(x.transferID, new DatabaseIndexHandler(i, this, 1));
+                communicator.getPurchaseFromPurchaseID(x.purchaseID, new DatabaseIndexHandler(i, this, 2));
+
+            }
+
+            i++;
         }
+        runOnce=false;
         for(JSONObject x: purchaseObjects){
             //Log.i("BUNCH OF JSON",x.toString());
             try {
@@ -291,15 +306,23 @@ public class HomeActivity extends AppCompatActivity {
                 if(!idSet.contains(purchaseID)){
                     //IF THIS CALL RETURNS TRUE THEN WE ADDED TO A SET
                     Log.i("Process purchase called","helo");
-                    processPurchase(purchaseDate,purchaseID,amount,status,medium, accountID);
+                    processPurchase(x, amount,status,medium, accountID);
                 }
 
             }catch(Exception e){e.printStackTrace();}
         }
     }
 
+    public void handleTransferFromHandler(JSONObject transfer, int index){
+        pTransfers.get(index).transfer=transfer;
+    }
+    public void handlePurchaseFromHandler(JSONObject purchase, int index){
+        pTransfers.get(index).purchase=purchase;
+    }
+
+
     // WE ONLY WANT PURCHASES MADE FROM LAST WEEK THAT ARE IN BOUND LIMITS THAT ARE "COMPLETED" STATUS
-    private void processPurchase(String date, String id, Integer amount, String status, String medium, String accountID){
+    private void processPurchase(JSONObject purchase,Integer amount, String status, String medium, String accountID){
         //TODO:: This method actually connects and makes a transfer for this purchase IF IT REQUIRES ONE
         //TODO:: figure out how to do the date filtering
         if(amount % ROUNDUP_BOUND!=0&&status.equals("executed")&&medium.equals("balance")){
@@ -312,7 +335,7 @@ public class HomeActivity extends AppCompatActivity {
 
             //once we have found the correct amount, and the purchase we want, make a transfer for it
             Log.i("make transfer for pu","helo");
-            makeTransferForPurchase(id,guess-amount, accountID);
+            makeTransferForPurchase(purchase,guess-amount, accountID);
 
         }else{
 
@@ -322,21 +345,49 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-    private void makeTransferForPurchase(String purchaseID, int transferAmount, String accountID) {
+    private void makeTransferForPurchase(JSONObject purchase, int transferAmount, String accountID) {
 
-        communicator.makeTransferFromAccount(accountID, cust.getRainyAccountID(), transferAmount, purchaseID,new TransferHandler(purchaseID, this));
+        String purchaseID="";
+        try{
+            purchaseID=purchase.getString("_id");
+        }catch(Exception e){e.printStackTrace();}
+
+        communicator.makeTransferFromAccount(accountID, cust.getRainyAccountID(), transferAmount, purchaseID,new TransferHandler(purchase, this));
 
                 //make the transfer and then add to database
     }
 
-
-    public void updateDataBaseWithPurchase(String purchaseID, JSONObject response){
+    ArrayList<PTransfer> pTransfers = new ArrayList<>();
+    public void updateDataBaseWithPurchase(JSONObject purchase, JSONObject response){
         //update database with purchase and transfer we just made, so we don't do it again
         //TODO:: update database so we dont duplicate stuff
-        TransferDB transfer = new TransferDB(purchaseID,"","","","");
 
+        Log.i("REsponse transfer", response.toString());
+        String transferID="";
+        String accountID="";
+        String transferDate="";
+        String purchaseID="";
+        String purchaseDate="";
+        JSONObject inner=null;
+        try {
+            inner = response.getJSONObject("objectCreated");
+            transferID=inner.getString("_id");
+            accountID=inner.getString("payee_id");
+            transferDate= inner.getString("transaction_date");
+            purchaseID=purchase.getString("_id");
+            purchaseDate=purchase.getString("purchase_date");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        TransferDB transfer = new TransferDB(purchaseID,transferID,accountID,purchaseDate,transferDate);
+        ArrayList<TransferDB> list= new ArrayList<>(db.transferDao().getAll());
+        for(TransferDB x: list){
+            Log.i("Transfer db x", x.transferID+" "+ x.purchaseID+" "+ x.accountID+" "+ x.purchaseDate+" "+ x.transferDate);
+        }
         db.transferDao().insertAll(transfer);
 
+        pTransfers.add(new PTransfer(purchase, inner));
     }
 
     private void setUpDataBase() {

@@ -56,20 +56,7 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void writeAndReadDB()throws Exception{
-        AccountDB acc  = new AccountDB("123","Checking","0");
-        db.accountDao().insertAll(acc);
-        TransferDB transfer = new TransferDB("90","80","123");
-        db.transferDao().insertAll(transfer);
 
-        List<TransferDB> list = db.transferDao().getAll();
-        Log.d("DID IT WORK", "YES"+list.size());
-
-        for(TransferDB x :list){
-            Log.d("TEST CLASS", x.accountID);
-            Log.d("TEST CLASS", x.purchaseID);
-            Log.d("TEST CLASS", x.transferID);
-            Log.d("TEST CLASS", String.valueOf(x.uid));
-        }
     }
 
     @Test
@@ -79,17 +66,6 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void serverCommunicatorTest()throws Exception{
-        ServerCommunicator bob = new ServerCommunicator(ApplicationProvider.getApplicationContext());
-        bob.getPurchasesForAccount("603b01854a4a8605712848d4", new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d("TEST CLASS", response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("TEST CLASS", error.toString());
-            }
-        });
+
     }
 }

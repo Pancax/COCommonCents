@@ -21,13 +21,12 @@ public class MainActivity extends AppCompatActivity{
     EditText customerId;
     EditText password;
     Button loginButton;
-    ImageView coolImageLogo;
+    //ImageView coolImageLogo;
 
     private String customerIdText="";
 
-    private String practiceCustomer="603b43be4a4a8605712849bc";
+    private String practiceCustomer="603b43be4a4a8605712849ba";
 
-    private String URL ="api.nessieisreal.com/enterprise/customers/";
     ServerCommunicator communicator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +36,8 @@ public class MainActivity extends AppCompatActivity{
         customerId = (EditText)findViewById(R.id.passwordField);
         password = (EditText)findViewById(R.id.customerIDField);
         loginButton = (Button) findViewById(R.id.button_login);
-        coolImageLogo = (ImageView) findViewById(R.id.imageView);
-        coolImageLogo.setImageResource(R.drawable.logo_small);
+       // coolImageLogo = (ImageView) findViewById(R.id.imageView);
+       // coolImageLogo.setImageResource(R.drawable.logo_small);
 
         communicator = new ServerCommunicator(this);
         loginButton.setOnClickListener(new View.OnClickListener() {
