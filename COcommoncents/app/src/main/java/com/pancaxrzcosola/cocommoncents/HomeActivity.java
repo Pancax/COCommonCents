@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -347,7 +348,23 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void pushToBig(){
         Log.i("BIG PUSH", "COOL");
-        pTransfers.addAll(pTransfers2);
+        for(PTransfer x: pTransfers2){
+            try {
+                String accID=x.purchase.getString("payer_id");
+                ArrayList<String> accIDList= new ArrayList<>();
+                for(Account acc:cust.getAccountList()){
+                    accIDList.add(acc.get_id());
+                }
+                if(accIDList.contains(accID)){
+                    pTransfers.add(x);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         adar.notifyDataSetChanged();
     }
 
