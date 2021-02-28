@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity{
 
     private String customerIdText="";
 
-    private String practiceCustomer="603b43be4a4a8605712849ba";
+    private String practiceCustomer="603b43be4a4a8605712849be";
 
     ServerCommunicator communicator;
     @Override
