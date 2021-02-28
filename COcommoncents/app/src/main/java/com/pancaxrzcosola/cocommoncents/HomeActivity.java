@@ -272,6 +272,7 @@ public class HomeActivity extends AppCompatActivity {
 
     //<purchase, transfer> or purchase transfer
     final double ROUNDUP_BOUND=5;
+    ArrayList<PTransfer> pTransfers2 = new ArrayList<>();
     boolean runOnce=true;
     private void compareDataBaseToInformation(){
         ArrayList<TransferDB> ourList = new ArrayList<>(db.transferDao().getAll());
@@ -286,10 +287,10 @@ public class HomeActivity extends AppCompatActivity {
             //we have transaction and purchase id aswell as acc, just get the right thing and give info bray bray
             //basically get the transfer and purchases based on the transfer and purchase ids
             if(runOnce) {
-                pTransfers.add(new PTransfer());
+                pTransfers2.add(new PTransfer());
                 adar.notifyDataSetChanged();
-                communicator.getTransferFromTransferID(x.transferID, new DatabaseIndexHandler(i, this, 1));
-                communicator.getPurchaseFromPurchaseID(x.purchaseID, new DatabaseIndexHandler(i, this, 2));
+                communicator.getTransferFromTransferID(x.transferID, new DatabaseIndexHandler(i, this, 1,ourList.size()));
+                communicator.getPurchaseFromPurchaseID(x.purchaseID, new DatabaseIndexHandler(i, this, 2,ourList.size()));
 
             }
 
@@ -316,10 +317,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void handleTransferFromHandler(JSONObject transfer, int index){
-        pTransfers.get(index).transfer=transfer;
+        pTransfers2.get(index).transfer=transfer;
     }
     public void handlePurchaseFromHandler(JSONObject purchase, int index){
-        pTransfers.get(index).purchase=purchase;
+        pTransfers2.get(index).purchase=purchase;
+    }
+    public void pushToBig(){
+        pTransfers.addAll(pTransfers2);
     }
 
 

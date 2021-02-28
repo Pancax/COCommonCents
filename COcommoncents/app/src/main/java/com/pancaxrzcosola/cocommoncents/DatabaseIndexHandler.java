@@ -19,18 +19,33 @@ public class DatabaseIndexHandler {
     Response.ErrorListener eList;
     HomeActivity caller;
     int type;
-
-    public DatabaseIndexHandler(int index, HomeActivity caller, int type){
+    int bigSize;
+    boolean TReady=false;
+    boolean PReady=false;
+    public DatabaseIndexHandler(int index, HomeActivity caller, int type, int bigSize){
         this.caller=caller;
         this.index=index;
         this.type=type;
+        this.bigSize=bigSize;
         this.list=new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if((DatabaseIndexHandler.this).type==1){
                     (DatabaseIndexHandler.this).caller.handleTransferFromHandler(response,(DatabaseIndexHandler.this).index);
+                    if((DatabaseIndexHandler.this).index==(DatabaseIndexHandler.this).bigSize-1){
+                        TReady=true;
+                        if(PReady){
+                            (DatabaseIndexHandler.this).caller.pushToBig();
+                        }
+                    }
                 }else{
                     (DatabaseIndexHandler.this).caller.handlePurchaseFromHandler(response,(DatabaseIndexHandler.this).index);
+                    if((DatabaseIndexHandler.this).index==(DatabaseIndexHandler.this).bigSize-1){
+                        PReady=true;
+                        if(TReady){
+                            (DatabaseIndexHandler.this).caller.pushToBig();
+                        }
+                    }
                 }
             }
         };
