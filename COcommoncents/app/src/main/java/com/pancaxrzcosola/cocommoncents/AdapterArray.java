@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> {
-    JSONArray arr;
+    PTransfer obj;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
@@ -28,8 +28,8 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
         }
     }
 
-    public AdapterArray(JSONArray js){
-        arr = js;
+    public AdapterArray(PTransfer pt){
+        obj = pt;
     }
 
     @NonNull
@@ -44,7 +44,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d("TagString","Element "+position);
         try {
-            holder.getTextView().setText(arr.get(position).toString());
+            holder.getTextView().setText("ID: "+obj.purchase.getString("_id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
