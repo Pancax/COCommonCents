@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity{
     EditText customerId;
     EditText password;
     Button loginButton;
-    ImageView coolImageLogo;
 
     private String customerIdText="";
 
@@ -37,8 +36,6 @@ public class MainActivity extends AppCompatActivity{
         customerId = (EditText)findViewById(R.id.passwordField);
         password = (EditText)findViewById(R.id.customerIDField);
         loginButton = (Button) findViewById(R.id.button_login);
-        coolImageLogo = (ImageView) findViewById(R.id.imageView);
-        coolImageLogo.setImageResource(R.drawable.logo_small);
 
         communicator = new ServerCommunicator(this);
         loginButton.setOnClickListener(new View.OnClickListener() {
