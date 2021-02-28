@@ -52,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.text);
 
         //Data initialization and creation
+        pTransfers.add(new PTransfer(new JSONObject(),new JSONObject()));
         adar = new AdapterArray(pTransfers);
         rView = findViewById(R.id.rViewID);
         rView.setAdapter(adar);
