@@ -21,9 +21,16 @@ public class TransferDB {
     @ColumnInfo(name = "account_id")
     public String accountID;
 
-    public TransferDB(String purchaseID, String transferID,String accountID){
+    @ColumnInfo(name = "transfer_date")
+    public String transferDate;
+
+    @ColumnInfo(name = "purchase_date")
+    public String purchaseDate;
+    public TransferDB(String purchaseID, String transferID,String accountID, String purchaseDate, String transferDate){
         this.purchaseID=purchaseID;
         this.transferID=transferID;
         this.accountID=accountID;
+        this.purchaseDate=purchaseDate;
+        this.transferDate=transferDate;
     }
 }
