@@ -31,7 +31,7 @@ public class TransferHandler  {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                error.printStackTrace();
             }
         };
     }

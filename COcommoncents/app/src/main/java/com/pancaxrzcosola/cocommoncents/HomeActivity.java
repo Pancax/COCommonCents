@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Index;
 import androidx.room.Room;
 
 import com.android.volley.Response;
@@ -37,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     private Customer cust = new Customer();
 
     private AppDatabase db;
-
+    private String customerID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,17 +55,18 @@ public class HomeActivity extends AppCompatActivity {
 
         communicator = new ServerCommunicator(this);
         String savingsvalue = "";
-        communicator.getCustomerForID(savedInstanceState.get("customer_id").toString(), new Response.Listener<JSONObject>() {
+        customerID = this.getIntent().getExtras().getString("customer_id");
+        Log.i("Customer id", customerID);
+        communicator.getCustomerForID(customerID, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     cust.set_id(response.getString("_id"));
                     cust.setFirst_name(response.getString("first_name"));
                     cust.setLast_name(response.getString("last_name"));
-                    cust.setAccounts(response.getJSONArray("account_ids"));
                     cust.setAddress(response.getJSONObject("address"));
                     // we are done getting customer so now get the accounts
-                    getAccountsForCustomer();
+                    getAccountIDSFromCustomer();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -72,16 +74,37 @@ public class HomeActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("wrong1","Unable to Obtain Customer!");
+                error.printStackTrace();
             }
         });
 
     }
 
+    private void getAccountIDSFromCustomer(){
+        communicator.getAccountIDSFromCustomer(customerID, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                cust.setAccounts(response) ;
+                getAccountsForCustomer();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
     private void getAccountsForCustomer() {
         for(int i = 0;i<cust.getAccounts().length();i++){
+            JSONObject accObj=null;
             try {
-                communicator.getAccountfromAccountID(cust.getAccounts().get(i).toString(),new Response.Listener<JSONObject>() {
+                 accObj=(JSONObject) cust.getAccounts().get(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                communicator.getAccountfromAccountID(accObj.getString("_id"),new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -92,18 +115,19 @@ public class HomeActivity extends AppCompatActivity {
                             acc.setCustomer_id(response.getString("customer_id"));
                             acc.setNickname(response.getString("nickname"));
                             acc.setRewards(response.getInt("rewards"));
-                            acc.setBill_ids(response.getJSONArray("bill_ids"));
                             cust.addAccount(acc);
-                            if(cust.getAccounts().length()==cust.getAccountList().size()){
-                                //we are done instantiating everything SO NOW DO EVERYTHING ELSE
-                                continueOnCreate();
-                            }
-                            if(acc.getNickname().equals(keyAccountNickname)){
+                            Log.i("ACCOUNTS FOR CUSTOMER", acc.get_id()+ " "+acc.getNickname());
+
+                            if(acc.getNickname().equalsIgnoreCase(keyAccountNickname)){
                                 savingsExists=true;
                                 cust.setRainyAccountID(acc.get_id());
                             }
-                            if(acc.getType().equals("checking")){
+                            if(acc.getType().equalsIgnoreCase("checking")){
                                 checkingExists=true;
+                            }
+                            if(cust.getAccounts().length()==cust.getAccountList().size()){
+                                //we are done instantiating everything SO NOW DO EVERYTHING ELSE
+                                continueOnCreate();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -131,17 +155,24 @@ public class HomeActivity extends AppCompatActivity {
         if(!checkingExists){
             //print out that a checking acc does not exist for this
             //finish this activity
-            finish();
+            //finish();
+            Log.i("checking dont exist","hello");
         }
         else{
             //if savings dont exist we need to create a new account for this customer and call it the name
             if(!savingsExists){
-                communicator.makeCustomerSavingsAcc(cust.get_id(), new Response.Listener<JSONObject>() {
+                Log.i("Made it make","hello");
+                communicator.makeCustomerSavingsAcc(customerID, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            String id=response.getString("account_number");
+                            String id=null;
+                            if(response.getString("message").equalsIgnoreCase("Account created")){
+                                JSONObject inner = response.getJSONObject("objectCreated");
+                                id = inner.getString("_id");
+                            }
                             cust.setRainyAccountID(id);
+                            Log.i("MAKE SAVINGS ACCOUNT",cust.getRainyAccountID());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -151,7 +182,7 @@ public class HomeActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Log.i("onfailure", error.toString());
                     }
                 });
             }
@@ -168,7 +199,7 @@ public class HomeActivity extends AppCompatActivity {
         public void run(){
             while(this.isAlive()){
                 try {
-                    this.sleep(30000);
+                    this.sleep(500000);
                     updateTransfersAndPurchases();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -198,68 +229,41 @@ public class HomeActivity extends AppCompatActivity {
         //just do all the checking accounts FOR NOW
         for(int i=0;i<cust.getAccountList().size();i++){
             Account x= cust.getAccountList().get(i);
+            communicator.getPurchasesForAccount(x.get_id(), new IndexHandler(i,this,1, cust.getAccountList().size()));
 
-            communicator.getPurchasesForAccount(x.get_id(), new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    for(int i=0;i<response.length();i++){
-                        try {
-                            purchaseObjects.add(response.getJSONObject(i));
-                            if(i==cust.getAccountList().size()){
-                                doneWithPurchases=true;
-                                doneWithBoth();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-            communicator.getTransfersForAccount(x.get_id(), new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    for(int i=0;i<response.length();i++){
-                        try {
-                            transferObjects.add(response.getJSONObject(i));
-                            if(i==cust.getAccountList().size()){
-                                doneWithTransfers=true;
-                                doneWithBoth();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
         }
         //cleanup big list
 
         //just grab 25 at random who cares
         //TODO:: fix it later
 
+
+
+        //TODO:: change this 4:54am
+        /*
         ArrayList<JSONObject> passToBrayPurch = new ArrayList<>();
         for(int i=0;i<25&&i<purchaseObjects.size();i++){
             passToBrayPurch.add(purchaseObjects.get(i));
 
-        }
+        }*/
         //give to brayden
 
     }
+    public void eatPurchaseList(ArrayList<JSONObject> list){
+        Log.i("Straight chomping","hg");
+        purchaseObjects.addAll(list);
+    }
+    public void continueWithTransfers() {
 
-    boolean doneWithPurchases=false;
-    boolean doneWithTransfers=false;
-    private void doneWithBoth(){
-        if(doneWithPurchases&&doneWithTransfers)
+        for(int i=0;i<cust.getAccountList().size();i++) {
+            Account x = cust.getAccountList().get(i);
+            communicator.getTransfersForAccount(x.get_id(), new IndexHandler(i,this,2,cust.getAccountList().size()));
+        }
+    }
+
+
+    public void doneWithBoth(){
+            Log.i("BIGDOG", "hello");
             compareDataBaseToInformation();
     }
 
@@ -276,6 +280,7 @@ public class HomeActivity extends AppCompatActivity {
             //TODO::
         }
         for(JSONObject x: purchaseObjects){
+            //Log.i("BUNCH OF JSON",x.toString());
             try {
                 String purchaseDate = x.getString("purchase_date");
                 String purchaseID = x.getString("_id");
@@ -285,6 +290,7 @@ public class HomeActivity extends AppCompatActivity {
                 String accountID=x.getString("payer_id");
                 if(!idSet.contains(purchaseID)){
                     //IF THIS CALL RETURNS TRUE THEN WE ADDED TO A SET
+                    Log.i("Process purchase called","helo");
                     processPurchase(purchaseDate,purchaseID,amount,status,medium, accountID);
                 }
 
@@ -296,7 +302,7 @@ public class HomeActivity extends AppCompatActivity {
     private void processPurchase(String date, String id, Integer amount, String status, String medium, String accountID){
         //TODO:: This method actually connects and makes a transfer for this purchase IF IT REQUIRES ONE
         //TODO:: figure out how to do the date filtering
-        if(amount % ROUNDUP_BOUND!=0&&status.equals("completed")&&medium.equals("balance")){
+        if(amount % ROUNDUP_BOUND!=0&&status.equals("executed")&&medium.equals("balance")){
             //room for rounding up
             int guess= amount;
             //add until we get to cap
@@ -305,6 +311,7 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             //once we have found the correct amount, and the purchase we want, make a transfer for it
+            Log.i("make transfer for pu","helo");
             makeTransferForPurchase(id,guess-amount, accountID);
 
         }else{
@@ -325,7 +332,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void updateDataBaseWithPurchase(String purchaseID, JSONObject response){
         //update database with purchase and transfer we just made, so we don't do it again
-
+        //TODO:: update database so we dont duplicate stuff
         TransferDB transfer = new TransferDB(purchaseID,"","","","");
 
         db.transferDao().insertAll(transfer);
@@ -333,9 +340,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setUpDataBase() {
-        db = Room.databaseBuilder(this, AppDatabase.class, "app-database").build();
+        db = Room.databaseBuilder(this, AppDatabase.class, "app-database").allowMainThreadQueries().build();
+
     }
 
+    public void eatTransferList(ArrayList<JSONObject> transferList) {
+        transferObjects.addAll(transferList);
+    }
 
 
     //remember to add the accounts to the database and store them also

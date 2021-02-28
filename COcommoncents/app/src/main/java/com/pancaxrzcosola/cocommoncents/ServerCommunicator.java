@@ -1,7 +1,7 @@
 package com.pancaxrzcosola.cocommoncents;
 
 import android.content.Context;
-
+import android.util.Log;
 
 
 import com.android.volley.RequestQueue;
@@ -28,6 +28,7 @@ public class ServerCommunicator {
     final private String GET_PURCHASES_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+"/purchases"
     final private String GET_TRANSFERS_FOR_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+/transfers
     final private String MAKE_TRANSFER_FROM_ACCOUNT_URL="http://api.nessieisreal.com/accounts/";//+id+"/transfers"
+    final private String GET_ACCOUNTIDS_FROM_CUSTOMER_URL="http://api.nessieisreal.com/customers/";//+id+accounts
 
 
 
@@ -38,6 +39,11 @@ public class ServerCommunicator {
     public void getCustomerForID(String id, Response.Listener<JSONObject> list, Response.ErrorListener eList){
         JSONObject send = new JSONObject();
         JsonObjectRequest request = new JsonObjectRequest(GET, CUSTOMER_ID_URL+id+"?key="+API_KEY, null, list,eList);
+        queue.add(request);
+    }
+
+    public void getAccountIDSFromCustomer(String id, Response.Listener<JSONArray> list, Response.ErrorListener eList){
+        JsonArrayRequest request = new JsonArrayRequest(GET, GET_ACCOUNTIDS_FROM_CUSTOMER_URL+id+"/accounts?key="+API_KEY, null, list,eList);
         queue.add(request);
     }
 
@@ -69,17 +75,18 @@ public class ServerCommunicator {
             accBody.put("rewards",0);
             accBody.put("balance",0);
         }catch(Exception e){e.printStackTrace();}
+        Log.i("RequestBody",accBody.toString());
         JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_SAVINGS_ACCOUNT_URL+customerID+"/accounts"+"?key="+API_KEY,accBody,list,eList);
         queue.add(request);
     }
 
-    public void getPurchasesForAccount(String accountId, Response.Listener<JSONArray> list, Response.ErrorListener eList){
+    public void getPurchasesForAccount(String accountId, IndexHandler iH){
 
-        JsonArrayRequest request = new JsonArrayRequest(GET, GET_PURCHASES_FOR_ACCOUNT_URL+accountId+"/purchases"+"?key="+API_KEY,null,list,eList);
+        JsonArrayRequest request = new JsonArrayRequest(GET, GET_PURCHASES_FOR_ACCOUNT_URL+accountId+"/purchases"+"?key="+API_KEY,null,iH.list,iH.eList);
         queue.add(request);
     }
-    public void getTransfersForAccount(String accountId, Response.Listener<JSONArray> list, Response.ErrorListener eList){
-        JsonArrayRequest request = new JsonArrayRequest(GET, GET_TRANSFERS_FOR_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,null,list,eList);
+    public void getTransfersForAccount(String accountId, IndexHandler iH){
+        JsonArrayRequest request = new JsonArrayRequest(GET, GET_TRANSFERS_FOR_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,null,iH.list,iH.eList);
         queue.add(request);
     }
 
@@ -97,7 +104,7 @@ public class ServerCommunicator {
         }catch(Exception e){
             e.printStackTrace();
         }
-        JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_TRANSFER_FROM_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,null,tranHand.list,tranHand.eList);
+        JsonObjectRequest request = new JsonObjectRequest(POST, MAKE_TRANSFER_FROM_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,body,tranHand.list,tranHand.eList);
         queue.add(request);
     }
 }

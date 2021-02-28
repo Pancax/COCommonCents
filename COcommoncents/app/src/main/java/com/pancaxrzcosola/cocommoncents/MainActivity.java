@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity{
 
     private String customerIdText="";
 
-    private String practiceCustomer="56c66be5a73e49274150727b";
+    private String practiceCustomer="603b43be4a4a8605712849bc";
 
     private String URL ="api.nessieisreal.com/enterprise/customers/";
     ServerCommunicator communicator;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
 
                 loginButton.setClickable(false);
-                customerIdText = customerId.getText().toString().trim();
+                customerIdText = practiceCustomer;
                 communicator.getCustomerForID(practiceCustomer, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
