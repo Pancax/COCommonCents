@@ -45,17 +45,22 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
+                loginButton.setClickable(false);
                 customerIdText = customerId.getText().toString().trim();
                 communicator.getCustomerForID(practiceCustomer, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("onSuccess", response.toString());
+                        Intent homeActivity = new Intent(MainActivity.this, HomeActivity.class);
+                        homeActivity.putExtra("customer_id",customerIdText);
+                        startActivity(homeActivity);
 
                     }
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("onfailure", error.toString());
+                        loginButton.setClickable(true);
                     }
                 });
 
