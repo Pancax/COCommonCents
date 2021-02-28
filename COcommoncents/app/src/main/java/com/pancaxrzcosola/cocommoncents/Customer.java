@@ -12,12 +12,14 @@ public class Customer {
     private JSONArray accounts;
     private JSONObject address;
     private ArrayList<JSONObject> list;
+    private ArrayList<Account> accountList;
 
     public Customer(){
         this._id = "";
         this.first_name = "";
         this.last_name = "";
         this.address = null;
+        accountList=new ArrayList<>();
     }
 
     public Customer(String _id, String first_name, String last_name, JSONObject address) {
@@ -27,7 +29,12 @@ public class Customer {
         this.address = address;
     }
 
-
+    public void addAccount(Account acc){
+        accountList.add(acc);
+    }
+    public ArrayList<Account> getAccountList(){
+        return accountList;
+    }
     public String get_id() {
         return _id;
     }
