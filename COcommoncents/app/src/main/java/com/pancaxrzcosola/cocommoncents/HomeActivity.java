@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.android.volley.Response;
@@ -24,6 +25,8 @@ public class HomeActivity extends AppCompatActivity {
     private TextView mTextView;
     public static final String keyAccountNickname = "COCCUTDHKTN2021";
     ServerCommunicator communicator;
+    RecyclerView rView;
+    AdapterArray adar;
     private boolean savingsExists = false;
     private boolean checkingExists = false;
     private Customer cust = new Customer();
@@ -110,6 +113,9 @@ public class HomeActivity extends AppCompatActivity {
 
         //Scroll through accounts
 
+        adar = new AdapterArray(cust.getAccounts());
+        rView = findViewById(R.id.rViewID);
+        rView.setAdapter(adar);
         //Does Check exist?
         if(!checkingExists){
             //print out that a checking acc does not exist for this
