@@ -160,6 +160,18 @@ public class HomeActivity extends AppCompatActivity {
     private void updateTransfersAndPurchases() {
         //this gets the transfers purchases
 
+
+        //TODO:: get transfers and purchases from each account checking that is also in the database
+        //TODO:: before we do that, we need to have settings set up so we know which account we want to pull purchases and transfers from
+        //add to big list
+        //just do all the checking accounts FOR NOW
+        for(Account x:cust.getAccountList()){
+            communicator.getPurchasesForAccount(x.get_id(),);
+            communicator.getTransfersForAccount(x.get_id(),);
+        }
+        //cleanup big list
+        //give to brayden
+
     }
 
 
@@ -168,6 +180,9 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
+
+
     //remember to add the accounts to the database and store them also
 
 }

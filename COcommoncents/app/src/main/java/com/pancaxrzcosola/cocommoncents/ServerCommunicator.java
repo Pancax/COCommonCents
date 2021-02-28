@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -71,12 +72,13 @@ public class ServerCommunicator {
         queue.add(request);
     }
 
-    public void getPurchasesForAccount(String accountId, Response.Listener<JSONObject> list, Response.ErrorListener eList){
+    public void getPurchasesForAccount(String accountId, Response.Listener<JSONArray> list, Response.ErrorListener eList){
 
-        JsonObjectRequest request = new JsonObjectRequest(GET, GET_PURCHASES_FOR_ACCOUNT_URL+accountId+"/purchases"+"?key="+API_KEY,null,list,eList);
+        JsonArrayRequest request = new JsonArrayRequest(GET, GET_PURCHASES_FOR_ACCOUNT_URL+accountId+"/purchases"+"?key="+API_KEY,null,list,eList);
         queue.add(request);
     }
-    public void getTransfersForAccount(String accountId, Response.Listener<JSONObject> list, Response.ErrorListener eList){
-
+    public void getTransfersForAccount(String accountId, Response.Listener<JSONArray> list, Response.ErrorListener eList){
+        JsonArrayRequest request = new JsonArrayRequest(GET, GET_TRANSFERS_FOR_ACCOUNT_URL+accountId+"/transfers"+"?key="+API_KEY,null,list,eList);
+        queue.add(request);
     }
 }

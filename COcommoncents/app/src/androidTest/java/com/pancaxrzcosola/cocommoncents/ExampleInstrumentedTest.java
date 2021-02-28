@@ -8,8 +8,12 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.pancaxrzcosola.cocommoncents.sqlitestuff.*;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,5 +75,21 @@ public class ExampleInstrumentedTest {
     @Test
     public void readDB()throws Exception{
 
+    }
+
+    @Test
+    public void serverCommunicatorTest()throws Exception{
+        ServerCommunicator bob = new ServerCommunicator(ApplicationProvider.getApplicationContext());
+        bob.getPurchasesForAccount("603b01854a4a8605712848d4", new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d("TEST CLASS", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("TEST CLASS", error.toString());
+            }
+        });
     }
 }
