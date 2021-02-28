@@ -7,17 +7,37 @@
     android:background="@drawable/gradient_blue_bg"
     tools:context=".MainActivity">
 
+<<<<<<< HEAD
+=======
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="60dp"
+        android:elevation="12dp"
+        android:src="@drawable/coologo"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+>>>>>>> b02b9c94084d89c43674aa920f47c0f145cb6c63
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+<<<<<<< HEAD
+=======
+        android:layout_marginTop="24dp"
+>>>>>>> b02b9c94084d89c43674aa920f47c0f145cb6c63
         android:layout_marginEnd="24dp"
         android:background="@drawable/logincontainer"
         android:elevation="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+<<<<<<< HEAD
         tools:layout_editor_absoluteY="216dp">
 
         <Button
@@ -47,6 +67,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+=======
+        app:layout_constraintTop_toBottomOf="@+id/image1">
+>>>>>>> b02b9c94084d89c43674aa920f47c0f145cb6c63
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"

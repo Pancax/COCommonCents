@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity{
     Button loginButton;
     //ImageView coolImageLogo;
 
+
     private String customerIdText="";
 
     private String practiceCustomer="603b43be4a4a8605712849ba";
