@@ -46,7 +46,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d("TagString","Element "+position);
         try {
-            holder.getTextView().setText("ID: "+obj.get(position).purchase.getString("_id"));
+            holder.getTextView().setText("ID: "+obj.get(position).purchase.getString("_id")+" Amount: "+obj.get(position).purchase.getInt("amount"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
