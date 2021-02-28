@@ -51,7 +51,9 @@ public class HomeActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.text);
 
         //Data initialization and creation
-
+        adar = new AdapterArray(pTransfers);
+        rView = findViewById(R.id.rViewID);
+        rView.setAdapter(adar);
 
         communicator = new ServerCommunicator(this);
         String savingsvalue = "";
@@ -148,9 +150,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void continueOnCreate() {
-        adar = new AdapterArray(pTransfers);
-        rView = findViewById(R.id.rViewID);
-        rView.setAdapter(adar);
         //Does Check exist?
         if(!checkingExists){
             //print out that a checking acc does not exist for this
