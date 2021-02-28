@@ -285,6 +285,7 @@ public class HomeActivity extends AppCompatActivity {
             //basically get the transfer and purchases based on the transfer and purchase ids
             if(runOnce) {
                 pTransfers.add(new PTransfer());
+                adar.notifyDataSetChanged();
                 communicator.getTransferFromTransferID(x.transferID, new DatabaseIndexHandler(i, this, 1));
                 communicator.getPurchaseFromPurchaseID(x.purchaseID, new DatabaseIndexHandler(i, this, 2));
 
@@ -387,6 +388,7 @@ public class HomeActivity extends AppCompatActivity {
         db.transferDao().insertAll(transfer);
 
         pTransfers.add(new PTransfer(purchase, inner));
+        adar.notifyDataSetChanged();
     }
 
     private void setUpDataBase() {
