@@ -96,10 +96,7 @@
             android:background="#00FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-<<<<<<< HEAD
-=======
             app:layout_constraintStart_toEndOf="@+id/image2"
->>>>>>> b02b9c94084d89c43674aa920f47c0f145cb6c63
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/buttonshape" />
 
