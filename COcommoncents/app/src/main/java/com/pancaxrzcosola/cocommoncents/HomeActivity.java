@@ -172,8 +172,28 @@ public class HomeActivity extends AppCompatActivity {
         //add to big list
         //just do all the checking accounts FOR NOW
         for(Account x:cust.getAccountList()){
-            communicator.getPurchasesForAccount(x.get_id(),);
-            communicator.getTransfersForAccount(x.get_id(),);
+            communicator.getPurchasesForAccount(x.get_id(), new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            communicator.getTransfersForAccount(x.get_id(), new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
         }
         //cleanup big list
         //give to brayden
