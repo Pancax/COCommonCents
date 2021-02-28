@@ -11,10 +11,6 @@ import android.widget.EditText;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.reimaginebanking.api.nessieandroidsdk.NessieError;
-import com.reimaginebanking.api.nessieandroidsdk.NessieResultsListener;
-import com.reimaginebanking.api.nessieandroidsdk.models.Customer;
-import com.reimaginebanking.api.nessieandroidsdk.requestclients.NessieClient;
 
 import org.json.JSONObject;
 
@@ -36,8 +32,8 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        customerId = (EditText)findViewById(R.id.edittext_customerid);
-        password = (EditText)findViewById(R.id.edittext_password);
+        customerId = (EditText)findViewById(R.id.passwordField);
+        password = (EditText)findViewById(R.id.customerIDField);
         loginButton = (Button) findViewById(R.id.button_login);
 
         communicator = new ServerCommunicator(this);
