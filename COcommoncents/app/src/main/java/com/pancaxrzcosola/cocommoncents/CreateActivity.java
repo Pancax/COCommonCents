@@ -35,15 +35,15 @@ public class CreateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_layout);
 
         //instantation buttons and stuff
-        firstNameET = (EditText)findViewById(R.id.edittest_firstname);
-        lastNameET = (EditText)findViewById(R.id.edittext_lastname);
-        streetAddrET = (EditText)findViewById(R.id.edittext_streetaddr);
-        stateET = (EditText)findViewById(R.id.edittext_state);
-        streetNameET = (EditText)findViewById(R.id.edittext_streetname);
-        streetNameET = (EditText)findViewById(R.id.edittext_streetnumber);
-        cityET = (EditText)findViewById(R.id.edittext_cityaddr);
-        zipET = (EditText)findViewById(R.id.edittext_zip);
-        createButton = (Button)findViewById(R.id.createButton);
+        firstNameET = (EditText)findViewById(R.id.firstNameBox);
+        lastNameET = (EditText)findViewById(R.id.lastNameBox);
+        streetAddrET = (EditText)findViewById(R.id.addressBox);
+        stateET = (EditText)findViewById(R.id.stateBox);
+        streetNameET = (EditText)findViewById(R.id.addressBox);
+        streetNameET = (EditText)findViewById(R.id.addressBox);
+        cityET = (EditText)findViewById(R.id.addressBox);
+        zipET = (EditText)findViewById(R.id.zipBox);
+        createButton = (Button)findViewById(R.id.createAccountButton);
 
         communicator = new ServerCommunicator(this);
         createButton.setOnClickListener(new View.OnClickListener() {

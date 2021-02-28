@@ -98,7 +98,7 @@
             app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/CommonTxtLogoF2" />
+            app:srcCompat="@drawable/coologo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

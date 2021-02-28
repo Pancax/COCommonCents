@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity{
     EditText customerId;
     EditText password;
     Button loginButton;
+    ImageView coolImageLogo;
 
     private String customerIdText="";
 
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity{
         customerId = (EditText)findViewById(R.id.passwordField);
         password = (EditText)findViewById(R.id.customerIDField);
         loginButton = (Button) findViewById(R.id.button_login);
+        coolImageLogo = (ImageView) findViewById(R.id.imageView);
+        coolImageLogo.setImageResource(R.drawable.logo_small);
 
         communicator = new ServerCommunicator(this);
         loginButton.setOnClickListener(new View.OnClickListener() {
