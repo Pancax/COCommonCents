@@ -65,7 +65,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
         Log.d("TagString","Element "+position);
         try {
             if(obj.get(position).purchase!=null) {
-                holder.getTransferAmtBox().setText(obj.get(position).transfer.getInt("amount"));
+                holder.getTransferAmtBox().setText(obj.get(position).transfer.getInt("amount")+"");
                 holder.getTransferIDBox().setText(obj.get(position).transfer.getString("_id"));
                 holder.getMerchantBox().setText(obj.get(position).purchase.getString("merchant_id"));
                 holder.getDateBox().setText(obj.get(position).transfer.getString("transaction_date"));
