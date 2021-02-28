@@ -21,7 +21,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
-            this.textView = (TextView) view.findViewById(R.id.textView);
+            this.textView = (TextView) view.findViewById(R.id.transferAmtBox);
         }
 
         public TextView getTextView(){
