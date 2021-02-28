@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean savingsExists = false;
     private boolean checkingExists = false;
     private Customer cust = new Customer();
-
+    TextView balance;
     private AppDatabase db;
     private String customerID;
     @Override
@@ -47,8 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         setUpDataBase();
-
-
+        balance = (TextView) findViewById(R.id.balanceView);
         mTextView = (TextView) findViewById(R.id.text);
 
         //Data initialization and creation
@@ -224,6 +223,10 @@ public class HomeActivity extends AppCompatActivity {
     private void updateTransfersAndPurchases() {
         //this gets the transfers purchases
 
+        //update balanceview
+        updateBalanceView();
+
+
 
         //TODO:: get transfers and purchases from each account checking that is also in the database
         //TODO:: before we do that, we need to have settings set up so we know which account we want to pull purchases and transfers from
@@ -251,6 +254,25 @@ public class HomeActivity extends AppCompatActivity {
         //give to brayden
 
     }
+
+    private void updateBalanceView() {
+        communicator.getAccountfromAccountID(cust.getRainyAccountID(), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    balance.setText("$"+response.getString("balance")+"."+"00");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
     public void eatPurchaseList(ArrayList<JSONObject> list){
         Log.i("Straight chomping","hg");
         purchaseObjects.addAll(list);

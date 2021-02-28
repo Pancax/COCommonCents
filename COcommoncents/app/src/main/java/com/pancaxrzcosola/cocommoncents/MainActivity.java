@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity{
     EditText customerId;
     EditText password;
     Button loginButton;
+    Button createButton;
     //ImageView coolImageLogo;
 
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity{
         customerId = (EditText)findViewById(R.id.passwordField);
         password = (EditText)findViewById(R.id.customerIDField);
         loginButton = (Button) findViewById(R.id.button_login);
+        createButton = (Button) findViewById(R.id.registerButton);
        // coolImageLogo = (ImageView) findViewById(R.id.imageView);
        // coolImageLogo.setImageResource(R.drawable.logo_small);
 
@@ -65,6 +67,13 @@ public class MainActivity extends AppCompatActivity{
                 });
 
 
+            }
+        });
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createActivity=new Intent(MainActivity.this, CreateActivity.class);
+                startActivity(createActivity);
             }
         });
     }
