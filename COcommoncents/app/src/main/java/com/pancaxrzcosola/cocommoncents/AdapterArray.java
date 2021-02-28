@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> {
-    PTransfer obj;
+    ArrayList<PTransfer> obj;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
@@ -28,7 +30,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
         }
     }
 
-    public AdapterArray(PTransfer pt){
+    public AdapterArray(ArrayList<PTransfer> pt){
         obj = pt;
     }
 
@@ -44,7 +46,7 @@ public class AdapterArray extends RecyclerView.Adapter<AdapterArray.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d("TagString","Element "+position);
         try {
-            holder.getTextView().setText("ID: "+obj.purchase.getString("_id"));
+            holder.getTextView().setText("ID: "+obj.get(position).purchase.getString("_id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

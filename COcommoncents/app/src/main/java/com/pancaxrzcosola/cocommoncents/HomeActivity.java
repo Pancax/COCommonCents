@@ -124,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void continueOnCreate() {
-        adar = new AdapterArray(cust.getAccounts());
+        adar = new AdapterArray(new ArrayList<PTransfer>());
         rView = findViewById(R.id.rViewID);
         rView.setAdapter(adar);
         //Does Check exist?
